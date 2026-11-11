@@ -1,0 +1,57 @@
+# WOGAHOMA — Apache config for green.ch (deployed with the build output)
+Options -Indexes
+DirectoryIndex index.html
+ErrorDocument 404 /404/index.html
+
+# green.ch deploys this site with a git checkout: never serve the repository's .git folder
+RedirectMatch 404 /\.git
+
+RewriteEngine On
+
+# ── Service domains → their page on wogahoma.com (301) ─────────────────
+# TODO: fill in from Wolf's domain list. Pattern:
+# RewriteCond %{HTTP_HOST} ^(www\.)?swimming-stmoritz\.(ch|com)$ [NC]
+# RewriteRule ^ https://wogahoma.com/swimming [R=301,L]
+# RewriteCond %{HTTP_HOST} ^(www\.)?hiking-and-biking-stmoritz\.(ch|com)$ [NC]
+# RewriteRule ^ https://wogahoma.com/hiking-biking [R=301,L]
+
+# ── HTTPS + canonical host (no www) ───────────────────────────────────
+RewriteCond %{HTTPS} off [OR]
+RewriteCond %{HTTP_HOST} ^www\. [NC]
+RewriteRule ^ https://wogahoma.com%{REQUEST_URI} [R=301,L]
+
+# ── Old site URLs (wogahoma.info / Jimdo, info.wogahoma.com) ───────────
+RewriteRule ^services/langlaufen/?$ /cross-country [R=301,L]
+RewriteRule ^services/cross-country/?$ /cross-country [R=301,L]
+RewriteRule ^services/sport-und-personal-training/?$ /personal-training [R=301,L]
+RewriteRule ^services/activity-concierge-engadin/?$ /concierge [R=301,L]
+RewriteRule ^services/gesundheitscoaching/?$ /personal-training [R=301,L]
+RewriteRule ^services/potentialentfaltung/?$ /longevity-coaching [R=301,L]
+RewriteRule ^ueber-mich/?$ /de#about [R=301,L,NE]
+RewriteRule ^kontakt/?$ /de#contact [R=301,L,NE]
+RewriteRule ^agb-s/?$ /de/agb [R=301,L]
+RewriteRule ^datenschutz/?$ /de/datenschutz [R=301,L]
+
+# ── Clean URLs: /cross-country serves /cross-country/index.html without a slash redirect
+DirectorySlash Off
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteCond %{REQUEST_FILENAME}/index.html -f
+RewriteRule ^(.+?)/?$ /$1/index.html [L]
+RewriteRule ^(.+)/$ /$1 [R=301,L]
+
+# ── Security & caching ────────────────────────────────────────────────
+<IfModule mod_headers.c>
+  Header always set Strict-Transport-Security "max-age=31536000"
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  <FilesMatch "\.(webp|jpg|png|svg)$">
+    Header set Cache-Control "public, max-age=2592000"
+  </FilesMatch>
+  <FilesMatch "\.(woff2|js|css)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+  <FilesMatch "\.html$">
+    Header set Cache-Control "public, max-age=300"
+  </FilesMatch>
+</IfModule>
