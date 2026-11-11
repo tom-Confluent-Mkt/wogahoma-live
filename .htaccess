@@ -8,12 +8,17 @@ RedirectMatch 404 /\.git
 
 RewriteEngine On
 
+# Let's Encrypt domain checks (/.well-known/acme-challenge/…) must never be redirected
+RewriteRule ^\.well-known/ - [L]
+
 # ── Service domains → their page on wogahoma.com (301) ─────────────────
-# TODO: fill in from Wolf's domain list. Pattern:
-# RewriteCond %{HTTP_HOST} ^(www\.)?swimming-stmoritz\.(ch|com)$ [NC]
-# RewriteRule ^ https://wogahoma.com/swimming [R=301,L]
-# RewriteCond %{HTTP_HOST} ^(www\.)?hiking-and-biking-stmoritz\.(ch|com)$ [NC]
-# RewriteRule ^ https://wogahoma.com/hiking-biking [R=301,L]
+# From the green.ch panel (2026-11-11). Add more domains from Wolf's list here.
+RewriteCond %{HTTP_HOST} ^(www\.)?crosscountry-skiing-stmoritz\.ch$ [NC]
+RewriteRule ^ https://wogahoma.com/cross-country [R=301,L]
+RewriteCond %{HTTP_HOST} ^(www\.)?langlaufen-stmoritz\.ch$ [NC]
+RewriteRule ^ https://wogahoma.com/de/langlauf [R=301,L]
+RewriteCond %{HTTP_HOST} ^(www\.)?activity-concierge-stmoritz\.ch$ [NC]
+RewriteRule ^ https://wogahoma.com/concierge [R=301,L]
 
 # ── HTTPS + canonical host (no www) ───────────────────────────────────
 RewriteCond %{HTTPS} off [OR]
