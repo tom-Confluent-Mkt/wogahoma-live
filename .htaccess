@@ -19,6 +19,11 @@ RewriteCond %{HTTP_HOST} ^(www\.)?langlaufen-stmoritz\.ch$ [NC]
 RewriteRule ^ https://wogahoma.com/de/langlauf [R=301,L]
 RewriteCond %{HTTP_HOST} ^(www\.)?activity-concierge-stmoritz\.ch$ [NC]
 RewriteRule ^ https://wogahoma.com/concierge [R=301,L]
+# Wolf's other domains (Tomás, 2026-11-24): his old site's domain → the German cross-country page, his name → the homepage
+RewriteCond %{HTTP_HOST} ^(www\.)?wogahoma\.info$ [NC]
+RewriteRule ^ https://wogahoma.com/de/langlauf [R=301,L]
+RewriteCond %{HTTP_HOST} ^(www\.)?wolfganghoffmann\.ch$ [NC]
+RewriteRule ^ https://wogahoma.com/ [R=301,L]
 
 # ── HTTPS + canonical host (no www) ───────────────────────────────────
 RewriteCond %{HTTPS} off [OR]
